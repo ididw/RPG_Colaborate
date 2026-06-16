@@ -19,8 +19,10 @@ namespace RPG_Colaborate
         int hp;
         int maxHp;
         int attackPower;
+        int mp;
+        int maxMp;
     public:
-        Player(const std::string& playerName, int startingHp, int startingAttack);
+        Player(std::string name, int maxHp, int maxMp, int attackPower);
         ~Player();
 
         // Getters and Setters
@@ -28,8 +30,13 @@ namespace RPG_Colaborate
         int getHp() const;
         int getMaxHp() const;
         int getAttackPower() const;
+
+        int getMp() const;
+        int getMaxMp() const;
         void setHp(int newHp);
         void setAttackPower(int newAttack);
+
+        bool consumeMp(int amount);
 
         // Core combat and interaction actions
         void attack(Monster& target);
