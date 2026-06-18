@@ -18,15 +18,17 @@ namespace RPG_Colaborate
     private:
         /* Basic attributes */
         string name;
+        std::string job;
         int hp;
         int maxHp;
         int attackPower;
         int mp;
         int maxMp;
+        int defense;
         map<int, Item> items;
         Skill* skillbox[3];
     public:
-        Player(string name, int maxHp, int maxMp, int attackPower);
+        Player::Player(std::string n, std::string j, int h, int m, int atk, int def);
         ~Player();
 
         // Getters
@@ -36,6 +38,9 @@ namespace RPG_Colaborate
         int getAttackPower() const;
         int getMp() const;
         int getMaxMp() const;
+        std::string getJob() const;
+        // Add this under public: in Player.h
+        int getBaseAttack() const ;
 
         // Setters
         void setName(string mewName);
@@ -44,15 +49,21 @@ namespace RPG_Colaborate
         void setAttackPower(int newAttack);
         void setMp(int newMp);
         void setMaxMp(int newMaxMp);
+        void setDefense(int def);
+        void setBaseAttack(int atk);
 
         bool consumeMp(int amount);
 
         // Core combat and interaction actions
-        void attack(Monster& target);
-        void takeDamage(int damage);
+        virtual void attack(Monster& target);
+        virtual void takeDamage(int damage);
         bool useItem(int itemCode);
         bool useSkill(int skillNumber, Monster& target);
         bool isAlive();
+
+        // 在 public: 底下找地方補上這兩行
+        void heal(int amount);
+        void restoreMp(int amount);
     };
 }
 
