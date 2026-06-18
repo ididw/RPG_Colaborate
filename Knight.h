@@ -1,0 +1,33 @@
+#ifndef KNIGHT_H
+#define KNIGHT_H
+
+#include "Player.h"
+#include "Skill.h"
+
+namespace RPG_Colaborate {
+    class Knight : public Player
+    {
+    private:
+        int criticalRate;
+        int criticalEffect;
+    public:
+        // Inherit the constructor from Player
+        Knight();
+        Knight(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
+
+        // getters
+        // 待寫
+        int getCriticalRate() const;
+        int getCriticalEffect() const;
+
+        // setters
+        // 待寫
+        void setCriticalRate(int newRate);
+        void setCriticalEffect(int newEffect);
+
+        // Override takeDamage for flat damage reduction (Knight's passive)
+        void takeDamage(int damage);
+    };
+}
+
+#endif
