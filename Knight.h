@@ -16,12 +16,10 @@ namespace RPG_Colaborate {
         Knight(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
 
         // getters
-        // 待寫
         int getCriticalRate() const;
         int getCriticalEffect() const;
 
         // setters
-        // 待寫
         void setCriticalRate(int newRate);
         void setCriticalEffect(int newEffect);
 

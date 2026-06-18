@@ -18,15 +18,14 @@ namespace RPG_Colaborate {
         Assassin(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
 
         // getters
-        // 待寫
         int getCriticalRate() const;
         int getCriticalEffect() const;
         int getTurnCounter() const;
 
         // setters
-        // 待寫
         void setCriticalRate(int newRate);
         void setCriticalEffect(int newEffect);
+        // turn counter should not be set by outside
 
         // Call this at the end of every turn
         void executeTurnActions(vector<Monster*>& monsterList);

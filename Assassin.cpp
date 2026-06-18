@@ -23,6 +23,15 @@ namespace RPG_Colaborate {
         *skillbox[2] = Skill("Nightmare Reap", "Damage", 0, 60);
     }
 
+    // getters
+    int Assassin::getCriticalRate() const { return criticalRate; }
+    int Assassin::getCriticalEffect() const { return criticalEffect; }
+    int Assassin::getTurnCounter() const { return turnCounter; }
+
+    // setters
+    void Assassin::setCriticalRate(int newRate) { criticalRate = newRate; }
+    void Assassin::setCriticalEffect(int newEffect) { criticalEffect = newEffect;}
+
     // 被動突襲
     void Assassin::executeTurnActions(std::vector<Monster*>& monsterList) {
         turnCounter++;

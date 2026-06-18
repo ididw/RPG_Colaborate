@@ -25,6 +25,14 @@ namespace RPG_Colaborate {
         *skillbox[2] = Skill("The Indomitable Will", "Buff", 0, 90);
     }
 
+    // getters
+    int Knight::getCriticalRate() const { return criticalRate; }
+    int Knight::getCriticalEffect() const { return criticalEffect; }
+
+    // setters
+    void Knight::setCriticalRate(int newRate) { criticalRate = newRate; }
+    void Knight::setCriticalEffect(int newEffect) { criticalEffect = newEffect;}
+
     void Knight::takeDamage(int damage) {
         // Knight's Passive: Damage reduction triggers when HP is below 50%
         if (hp < (maxHp / 2)) {

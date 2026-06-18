@@ -41,7 +41,7 @@ namespace RPG_Colaborate
         cout << user.getName() << " is using item: " << name << endl;
         quantity--; // 扣除數量
 
-        // 備註:需要等確認所有Item型別才能繼續寫
+        // 35備註:需要等確認所有Item型別才能繼續寫
         // 根據王懷賢、宋金日的規劃：分為回血與回魔 (image_1.png)
         // Use lowercase or specific strings to check both type and name for safety
     /*if (type == "Potion" || type == "HP" || name == "Potion" || name == "Health Potion" || name == "紅藥水") {
