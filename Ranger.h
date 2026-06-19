@@ -36,13 +36,13 @@ namespace RPG_Colaborate {
 
         // 遊俠機制覆寫 (Overrides)
         // 覆寫普攻：處理對 Boss 增傷 50% 以及 連續射擊 (三連射)
-        void attack(Monster& target) override;
+        void attack(int targetIndex, vector<Monster*> monsters) override;
 
         // 覆寫受傷：處理假人擋刀機制
         void takeDamage(int damage) override;
 
         // 覆寫使用技能：攔截並實作遊俠特有技能邏輯
-        bool useSkill(int skillNumber, Monster& target, std::vector<Monster*>& allMonsters);
+        bool useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) override;
         
         // 處理回合結束的狀態結算 (比如連射回合減少)
         void updateTurnStatus();

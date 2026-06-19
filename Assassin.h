@@ -16,6 +16,7 @@ namespace RPG_Colaborate {
     public:
         Assassin();
         Assassin(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
+        ~Assassin();
 
         // getters
         int getCriticalRate() const;

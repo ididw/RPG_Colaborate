@@ -1,3 +1,4 @@
+#include "BattleManager.h"
 #include "Player.h"
 #include "Item.h"  
 #include "Skill.h"
@@ -63,9 +64,9 @@ namespace RPG_Colaborate
 
     // 1. Basic Attack(已調整)
     // 發動普攻，然後怪物受到傷害
-    void Player::attack(Monster& target) {
+    void Player::attack(int targetIndex, vector<Monster*> monsters) {
         cout << name << " performs a basic attack!" << endl;
-        target.takeDamage(attackPower);
+        monsters[targetIndex]->takeDamage(attackPower);
     }
 
     // 2. Take Damage (受到傷害)(已調整)
@@ -112,13 +113,13 @@ namespace RPG_Colaborate
     }
 
     // 4. Use Skill (使用技能)(已調整)
-    bool Player::useSkill(int skillNumber, Monster& target) {
+    bool Player::useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) {
         // 計畫:加入技能庫，選擇技能施放
         // 呼叫該技能的use函式
         if (skillNumber >= 1 && skillNumber < 4) {
             if (consumeMp(skillbox[skillNumber-1]->getMpCost())) {
                 // 消耗魔力施放技能
-                skillbox[skillNumber-1]->use(*this, target);
+                skillbox[skillNumber-1]->use(*this, targetIndex, players, monsters);
                 return true;
             }
             // 魔力不足，回傳false
@@ -152,4 +153,3 @@ namespace RPG_Colaborate
     //    std::cout << "💙 " << name << " healed " << amount << " MP points. Current MP: " << mp << "/" << maxMp << "\n";
     //}
 }
-    

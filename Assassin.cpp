@@ -23,6 +23,16 @@ namespace RPG_Colaborate {
         skillbox[2] = new Skill("Nightmare Reap", "Damage", 0, 60);
     }
 
+    Assassin::~Assassin()
+    {
+        for (int i = 0; i < 3; i++) {
+            if (skillbox[i] != nullptr) {
+                delete skillbox[i];
+                skillbox[i] = nullptr;
+            }
+        }
+    }
+
     // getters
     int Assassin::getCriticalRate() const { return criticalRate; }
     int Assassin::getCriticalEffect() const { return criticalEffect; }

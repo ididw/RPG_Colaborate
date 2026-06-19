@@ -19,10 +19,19 @@ namespace RPG_Colaborate {
       criticalRate(15), criticalEffect(200)
     {
         job = "Knight";
-        job = "Knight";
         skillbox[0] = new Skill("Shield Charge", "Damage", attackPower, 30);
         skillbox[1] = new Skill("Knight Aura", "CC", 0, 50);
         skillbox[2] = new Skill("The Indomitable Will", "Buff", 0, 90);
+    }
+
+    Knight::~Knight()
+    {
+        for (int i = 0; i < 3; i++) {
+            if (skillbox[i] != nullptr) {
+                delete skillbox[i];
+                skillbox[i] = nullptr;
+            }
+        }
     }
 
     // getters
@@ -44,5 +53,10 @@ namespace RPG_Colaborate {
             // 🛠️ 補上這段，不然騎士滿血時會無敵！
             Player::takeDamage(damage);
         }
+    }
+
+    bool Knight::useSkill(int skillNumber, Monster& target)
+    {
+        
     }
 }

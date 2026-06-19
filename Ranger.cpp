@@ -52,8 +52,8 @@ namespace RPG_Colaborate {
     void Ranger::setCriticalEffect(int newEffect) { criticalEffect = newEffect; }
 
     // 覆寫普攻邏輯
-    void Ranger::attack(Monster& target) {
-        bool isBoss = (target.getName().find("Boss") != string::npos);
+    void Ranger::attack(int targetIndex, vector<Monster*> monsters) {
+        bool isBoss = (monsters[targetIndex]->getName().find("Boss") != string::npos);
         double multiplier = isBoss ? 1.5 : 1.0;
         int finalDamage = round(attackPower * multiplier);
         int shots = (multiShotTurns > 0) ? 3 : 1; 
@@ -63,9 +63,9 @@ namespace RPG_Colaborate {
         }
 
         for (int i = 0; i < shots; ++i) {
-            cout << name << " shoots an arrow at " << target.getName() << "!" << endl;
-            target.takeDamage(finalDamage);
-            if (!target.isAlive()) break; 
+            cout << name << " shoots an arrow at " << monsters[targetIndex]->getName() << "!" << endl;
+            monsters[targetIndex]->takeDamage(finalDamage);
+            if (!monsters[targetIndex]->isAlive()) break; 
         }
     }
 
@@ -84,7 +84,7 @@ namespace RPG_Colaborate {
     }
 
     // 遊俠的技能邏輯 
-    bool Ranger::useSkill(int skillNumber, Monster& target, std::vector<Monster*>& allMonsters) {
+    bool Ranger::useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) {
         if (skillNumber < 1 || skillNumber > 3) {
             cout << "The skill does not exist." << endl;
             return false;
@@ -111,7 +111,7 @@ namespace RPG_Colaborate {
         if (skillNumber == 1) { 
             multiShotTurns = 2; 
             cout << " [Buff] Basic attacks become Triple Shot for 2 turns!" << endl;
-            attack(target); 
+            attack(targetIndex ,monsters); 
         } 
         else if (skillNumber == 2) { 
             decoyHp = hp; 
@@ -120,7 +120,7 @@ namespace RPG_Colaborate {
         else if (skillNumber == 3) { 
             cout << " [Arrow Rain] Unleashing a barrage of arrows!" << endl;
             std::vector<Monster*> aliveMonsters;
-            for (auto m : allMonsters) {
+            for (auto m : monsters) {
                 if (m != nullptr && m->isAlive()) {
                     aliveMonsters.push_back(m);
                 }
