@@ -9,9 +9,10 @@
 主要元素:角色陣營、怪物陣營、行動回合
         輸出戰鬥面板、回合管理
 
-.h檔內存放鎖定目標類型與目前全狀態類型
-待調整/新增:
-治療目標
+.h檔內存放鎖定目標類型、治療目標類型與目前全狀態類型
+enum EffectType { NONEE, LOWERDEFENSE, TAUNT, PERSEVERANCE, BURN, COLD, POISON, STRENGTH, WEAKEN, SPACEGOAT, HIDE, GOLDBULLET, COUNTERATTACK };
+從左到右:
+減防 嘲諷 堅毅(不死+回血) 燃燒 寒冷 毒爆 增傷 虛弱 假人 隱身 金色子彈 反擊
 
 Player元素更新:
 函式:
@@ -36,9 +37,10 @@ healPercent 治療比率
 hpCost 耗血率
 
 函式:
+建構子:新增了16參數的建構子，能初始化所有需用到的變數
 use(使用者、當前索敵、玩家站位表、怪物站位表)
 
 待調整/新增:
 showInfo()
 
-角色沒有大改
+需求:補全其他角色

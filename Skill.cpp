@@ -4,14 +4,22 @@
 #include "Monster.h"
 #include <iostream>
 #include <string>
+using std::string;
 using std::cout;
 using std::endl;
 
 namespace RPG_Colaborate
 {
     //constructors
+    Skill::Skill() {}
     Skill::Skill(string theName, string theType, int theDamage, int theMpCost)
     : name(theName), type(theType), damage(theDamage), mpCost(theMpCost) {}
+    Skill::Skill(string theName, TargetType TType, HealTargetType HType, EffectType EType,
+    SkillType isDmg, SkillType isSt, SkillType isB, SkillType isDb, SkillType isH, SkillType isSp, SkillType isRv,
+    int theDamage, double theMultiplier, int theHealPercent, int theMpCost, int theHpCost)
+    : name(theName), targetType(TType), healTargetType(HType), effectType(EType),
+    isDamage(isDmg), isStatic(isSt), isBuff(isB), isDebuff(isDb), isHeal(isH), isSpawn(isSp), isRevive(isRv),
+    damage(theDamage), multiplier(theMultiplier), healPercent(theHealPercent), mpCost(theMpCost), hpCost(theHpCost) {}
 
     Skill::~Skill(){}
 
@@ -54,7 +62,6 @@ namespace RPG_Colaborate
                 if (leftTargetIndex > 0) {
                     monsters[leftTargetIndex]->takeDamage(0.5 * damage);
                 }
-                break;
 
                 int rightTargetIndex = targetIndex + 1;
                 while (leftTargetIndex < monsters.size() &&
@@ -118,7 +125,6 @@ namespace RPG_Colaborate
                 if (leftTargetIndex > 0) {
                     monsters[leftTargetIndex]->takeEffect(effectType);
                 }
-                break;
 
                 int rightTargetIndex = targetIndex + 1;
                 while (leftTargetIndex < monsters.size() &&
@@ -143,10 +149,22 @@ namespace RPG_Colaborate
 
         // 技能有治療
         if (isHeal == HEAL) {
-            switch (targetType)
+            switch (healTargetType)
             {
             case OWN:
                 user.heal(0.01 * healPercent * user.getMaxHp());
+                break;
+            case LOWERHP:
+                double maxHpRate = 0;
+                int lowerHpIndex = 0;
+                for (int i = 0; i < players.size(); i++) {
+                    double playerHpRate = 1.0 * players[i]->getHp() / players[i]->getMaxHp();
+                    if (playerHpRate > maxHpRate) {
+                        maxHpRate = playerHpRate;
+                        lowerHpIndex = i;
+                    }
+                }
+                players[lowerHpIndex]->heal(healPercent);
                 break;
             case TEAM:
                 for (int i = 0; i < players.size(); i++) {
@@ -154,6 +172,7 @@ namespace RPG_Colaborate
                         players[i]->heal(0.01 * healPercent * user.getMaxHp());
                     }
                 }
+                break;
             default:
                 break;
             }

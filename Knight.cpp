@@ -10,9 +10,12 @@ namespace RPG_Colaborate {
     : Player(), criticalRate(15), criticalEffect(200)
     {
         job = "Knight";
-        skillbox[0] = new Skill("Shield Charge", "Damage", attackPower, 30);
-        skillbox[1] = new Skill("Knight Aura", "CC", 0, 50);
-        skillbox[2] = new Skill("The Indomitable Will", "Buff", 0, 90);
+        skillbox[0] = new Skill("Shield Charge", SPREAD, NONEH, LOWERDEFENSE,
+            DAMAGE, NONE, NONE, DEBUFF, NONE, NONE, NONE, attackPower, 1.6, 0, 30, 0);
+        skillbox[1] = new Skill("Knight Aura", AOE, NONEH, TAUNT,
+            NONE, NONE, NONE, DEBUFF, NONE, NONE, NONE, 0, 0, 0, 50, 0);
+        skillbox[2] = new Skill("The Indomitable Will", OWN, NONEH, PERSEVERANCE,
+            NONE, STATIC, NONE, NONE, NONE, NONE, NONE, 0, 0, 0, 90, 0);
     }
     Knight::Knight(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense)
     : Player(theName, theMaxHp, theMaxMp, theAttackPower, theDefense), 
@@ -57,6 +60,6 @@ namespace RPG_Colaborate {
 
     bool Knight::useSkill(int skillNumber, Monster& target)
     {
-        
+
     }
 }

@@ -1,5 +1,5 @@
 #ifndef BATTLEMANAGER_H
-#define BATTELMANAGER_H
+#define BATTLEMANAGER_H
 
 #include <vector>
 using std::vector;
@@ -12,7 +12,8 @@ namespace RPG_Colaborate
     class Monster;
 
     enum TargetType { OWN, SINGLE, SPREAD, AOE, TEAM };
-    enum EffectType { NONE, BURN, COLD, POISON, STRENGTH, WEAKEN, SPACEGOAT, HIDE, GOLDBULLET, COUNTERATTACK };
+    enum HealTargetType { NONEH, OWNH, LOWERHP, TEAMH };
+    enum EffectType { NONEE, LOWERDEFENSE, TAUNT, PERSEVERANCE, BURN, COLD, POISON, STRENGTH, WEAKEN, SPACEGOAT, HIDE, GOLDBULLET, COUNTERATTACK };
 
     class BattleManager
     {

@@ -18,8 +18,8 @@ namespace RPG_Colaborate
         string name;
         string type;
         TargetType targetType;
+        HealTargetType healTargetType;
         EffectType effectType;
-        double multiplier;
         SkillType isDamage;
         SkillType isStatic;
         SkillType isBuff;
@@ -28,12 +28,17 @@ namespace RPG_Colaborate
         SkillType isSpawn;
         SkillType isRevive;
         int damage;
+        double multiplier;
         int healPercent;
         int mpCost;
         int hpCost;
     public:
         // 建構子
+        Skill();
         Skill(string theName, string theType, int theDamage, int theMpCost);
+        Skill(std::string theName, TargetType TType, HealTargetType HType, EffectType EType,
+        SkillType isDmg, SkillType isSt, SkillType isB, SkillType isDb, SkillType isH, SkillType isSp, SkillType isRv,
+        int theDamage, double theMultiplier, int theHealPercent, int theMpCost, int theHpCost);
         ~Skill();
 
         // Getters
