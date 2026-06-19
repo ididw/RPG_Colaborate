@@ -16,6 +16,9 @@ namespace RPG_Colaborate {
         int multiShotTurns; // 連續射擊剩餘回合數
         int decoyHp;        // 假人血量 (大於 0 代表假人存在)
 
+        int currentCD[3];   // 記錄 3 個技能「目前剩餘」的冷卻回合數
+        int maxCD[3];       // 記錄 3 個技能的「最大」冷卻回合數
+
     public:
         // Constructors
         Ranger();
