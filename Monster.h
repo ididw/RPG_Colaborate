@@ -7,6 +7,15 @@ using std::string;
 namespace RPG_Colaborate
 {
     class Player;
+
+    enum EffectType; // 假設原本有的狀態類型
+
+    // 1. 新增等級/稀有度列舉
+    enum class MonsterRank {
+        Normal,  // 小怪
+        Elite,   // 精英
+        Boss     // Boss
+    };
     
     class Monster
     {
@@ -19,11 +28,12 @@ namespace RPG_Colaborate
         int evadeRate;
         int defense;
         map<EffectType, int> StatusEffectList;
+        MonsterRank rank;
 
     public:
         //建構子
         Monster();
-        Monster(const string& name,int hp,int attackPower,int rewardGold,int evadeRate,int defense);
+        Monster(const string& name,int hp,int attackPower,int rewardGold,int evadeRate,int defense, MonsterRank rank);
 
 
         //getters
