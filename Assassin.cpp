@@ -51,7 +51,7 @@ namespace RPG_Colaborate {
     void Assassin::setCriticalRate(int newRate) { criticalRate = newRate; }
     void Assassin::setCriticalEffect(int newEffect) { criticalEffect = newEffect;}
 
-    // ✨ 新增：實作刺客的專屬普攻（支援暴擊與災厄之手加成）
+    //  新增：實作刺客的專屬普攻（支援暴擊與災厄之手加成）
     void Assassin::attack(int targetIndex, vector<Monster*> monsters, vector<Player*> players) {
         int currentCritRate = criticalRate + getTempCritRateBonus();
         int currentCritEffect = criticalEffect + getTempCritEffectBonus();
