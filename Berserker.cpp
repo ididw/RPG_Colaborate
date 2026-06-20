@@ -6,180 +6,118 @@ using std::cout;
 using std::endl;
 
 namespace RPG_Colaborate {
-    // Constructors
     Berserker::Berserker()
-    : Player(), criticalRate(10), criticalEffect(200), 
-      passiveHealRatio(0.25), isCounterActive(false), activeEnemyLine(nullptr)
+    : Player(), criticalRate(15), criticalEffect(200), passiveHealRatio(0.2)
     {
         job = "Berserker";
-        // 使用 new 配置記憶體，設定技能基本資訊 (數值會在執行時依機制加權)
-        skillbox[0] = new Skill("嗜血狂擊", "Damage", attackPower * 2, 0); // 消耗血不耗魔
-        skillbox[1] = new Skill("反擊巨獸", "Buff", 0, 40);
-        skillbox[2] = new Skill("狂獸極刑", "Damage", attackPower * 3, 60);
-
-        // 初始化 CD
-        for(int i = 0; i < 3; ++i) currentCD[i] = 0;
-        maxCD[0] = 4; // 嗜血狂擊 CD 4 回合
-        maxCD[1] = 4; // 反擊巨獸 CD 4 回合
-        maxCD[2] = 7; // 狂獸極刑 CD 7 回合
+        skillbox[0] = new Skill("嗜血狂擊", SPREAD, NONEH, NONEE, 0,
+            DAMAGE, NONE, NONE, NONE, NONE, NONE, NONE, attackPower, 2.5, 0, 0, 0, 4); 
+        skillbox[1] = new Skill("反擊巨獸", OWN, NONEH, COUNTERATTACK, 1,
+            NONE, STATIC, NONE, NONE, NONE, NONE, NONE, 0, 0, 0, 40, 0, 4);
+        skillbox[2] = new Skill("狂獸極刑", AOE, NONEH, NONEE, 0,
+            DAMAGE, NONE, NONE, NONE, NONE, NONE, NONE, attackPower, 0, 0, 70, 0, 7);
     }
 
     Berserker::Berserker(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense)
     : Player(theName, theMaxHp, theMaxMp, theAttackPower, theDefense), 
-      criticalRate(10), criticalEffect(200), 
-      passiveHealRatio(0.25), isCounterActive(false), activeEnemyLine(nullptr)
+      criticalRate(15), criticalEffect(200), passiveHealRatio(0.2)
     {
         job = "Berserker";
-        skillbox[0] = new Skill("嗜血狂擊", "Damage", attackPower * 2, 0);
-        skillbox[1] = new Skill("反擊巨獸", "Buff", 0, 40);
-        skillbox[2] = new Skill("狂獸極刑", "Damage", attackPower * 3, 60);
-
-        for(int i = 0; i < 3; ++i) currentCD[i] = 0;
-        maxCD[0] = 4;
-        maxCD[1] = 4;
-        maxCD[2] = 7;
+        skillbox[0] = new Skill("嗜血狂擊", SPREAD, NONEH, NONEE, 0,
+            DAMAGE, NONE, NONE, NONE, NONE, NONE, NONE, attackPower, 2.5, 0, 0, 0, 4); 
+        skillbox[1] = new Skill("反擊巨獸", OWN, NONEH, COUNTERATTACK, 1,
+            NONE, STATIC, NONE, NONE, NONE, NONE, NONE, 0, 0, 0, 40, 0, 4);
+        skillbox[2] = new Skill("狂獸極刑", AOE, NONEH, NONEE, 0,
+            DAMAGE, NONE, NONE, NONE, NONE, NONE, NONE, attackPower, 0, 0, 70, 0, 7);
     }
 
-    // Getters & Setters
+    Berserker::~Berserker() {
+        for (int i = 0; i < 3; i++) {
+            if (skillbox[i] != nullptr) {
+                delete skillbox[i];
+                skillbox[i] = nullptr;
+            }
+        }
+    }
+
     int Berserker::getCriticalRate() const { return criticalRate; }
     int Berserker::getCriticalEffect() const { return criticalEffect; }
-    bool Berserker::getIsCounterActive() const { return isCounterActive; }
     void Berserker::setCriticalRate(int newRate) { criticalRate = newRate; }
     void Berserker::setCriticalEffect(int newEffect) { criticalEffect = newEffect; }
 
-    // 覆寫受傷邏輯 (核心機制：被動回血 + 受到傷害立即反擊)
     void Berserker::takeDamage(int damage) {
-        // 修正原代碼的整數除法漏洞，轉型為 double 計算防禦減傷
-        if (defense > 0) {
-            damage = round(damage * (1 - ( (double)defense / (defense + 100) )));
-        }
+        int oldHp = hp;
+        Player::takeDamage(damage);
+        int actualDamage = oldHp - hp;
 
-        hp -= damage;
-        if (hp < 0) hp = 0;
-
-        cout << " " << name << " takes " << damage << " points of damage! " 
-             << "(Current HP: " << hp << "/" << maxHp << ")" << endl;
-
-        // --- 被動技能：受到任何傷害後回復該傷害固定比例的生命值 ---
-        if (isAlive() && damage > 0) {
-            int healAmount = round(damage * passiveHealRatio);
-            cout << " [Berserker Passive] Bloodlust triggered! Recovering from pain." << endl;
-            heal(healAmount); 
-        }
-
-        // --- 主動技能觸發：反擊巨獸 ---
-        if (isAlive() && isCounterActive && activeEnemyLine != nullptr) {
-            cout << " [Counter Behemoth] Triggers a massive global counterattack!" << endl;
-            
-            // 1. 對敵方全體進行反擊 (造成 120% 攻擊力的傷害)
-            int counterDamage = round(attackPower * 1.2);
-            for (auto enemy : *activeEnemyLine) {
-                if (enemy != nullptr && enemy->isAlive()) {
-                    cout << " Countering " << enemy->getName() << "!" << endl;
-                    enemy->takeDamage(counterDamage);
-                }
-            }
-
-            // 2. 回復 25% 最大生命值
-            int skillHeal = round(maxHp * 0.25);
-            heal(skillHeal);
-
-            // 3. 狀態消失
-            isCounterActive = false;
-            activeEnemyLine = nullptr; // 解除指針綁定
-            cout << " Counter state has faded." << endl;
-        }
-
-        if (!isAlive()) {
-            cout << name << " has been defeated..." << endl;
+        // 被動技能：根據實際承受傷害的比例回血
+        if (isAlive() && actualDamage > 0) {
+            int healAmount = round(actualDamage * passiveHealRatio);
+            cout << "🩸 [Berserker Passive] Bloodlust triggered! Recovering " << healAmount << " HP." << endl;
+            hp += healAmount;
+            if (hp > maxHp) hp = maxHp;
         }
     }
 
-    // 實作狂戰士三大技能
-    bool Berserker::useSkill(int skillNumber, int targetIndex, std::vector<Monster*>& enemyLine) {
-        if (skillNumber < 1 || skillNumber > 3) {
-            cout << "The skill does not exist." << endl;
+    void Berserker::triggerCounterAttack(vector<Monster*> monsters) {
+        cout << "🪓 [Counter Behemoth] " << name << " triggers a massive global counterattack!" << endl;
+        
+        int counterDamage = round(attackPower * 1.2);
+        for (auto enemy : monsters) {
+            if (enemy != nullptr && enemy->isAlive()) {
+                cout << " Countering " << enemy->getName() << "!" << endl;
+                enemy->takeDamage(counterDamage);
+            }
+        }
+
+        int skillHeal = round(maxHp * 0.25);
+        cout << "🩸 [Counter Behemoth] Recovers " << skillHeal << " HP from the onslaught!" << endl;
+        hp += skillHeal;
+        if (hp > maxHp) hp = maxHp;
+
+        // 反擊結算後直接拔除狀態，避免重複觸發
+        StatusEffectList[COUNTERATTACK] = -1;
+    }
+
+    bool Berserker::useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) {
+        if (skillNumber < 0 || skillNumber >= 3 || skillbox[skillNumber] == nullptr) return false;
+
+        int mpRequired = skillbox[skillNumber]->getMpCost();
+        if (mp < mpRequired) {
+            cout << name << " does not have enough MP!" << endl;
             return false;
         }
 
-        int skillIndex = skillNumber - 1;
-        Skill* usedSkill = skillbox[skillIndex];
-
-        // 1. 檢查 CD
-        if (currentCD[skillIndex] > 0) {
-            cout << " Skill [" << usedSkill->getName() << "] is on cooldown! (" 
-                 << currentCD[skillIndex] << " turns remaining)" << endl;
-            return false;
-        }
-
-        // 2. 檢查並消耗魔力/生命
-        if (skillNumber == 1) {
-            // 嗜血狂擊：消耗自身 15% 當前生命值 (至少保留 1 點血，不直接自殺)
+        if (skillNumber == 0) {
+            // 攔截並處理扣血機制
             int hpCost = round(hp * 0.15);
-            if (hpCost < 1) hpCost = 1;
-            
+            if (hpCost < 1) hpCost = 1; // 至少扣 1
             if (hp <= hpCost) {
-                cout << " Too low HP to cast [嗜血狂擊]!" << endl;
-                return false;
+                cout << name << "'s HP is too low to cast [嗜血狂擊]!" << endl;
+                return false; // 血量不夠則終止施放
             }
             hp -= hpCost;
-            cout  << name << " consumes " << hpCost << " HP to empower the strike! (Remaining HP: " << hp << "/" << maxHp << ")" << endl;
-        } else {
-            // 其它技能消耗魔力
-            if (!consumeMp(usedSkill->getMpCost())) return false;
-        }
-
-        cout << name << " casts a skill: [" << usedSkill->getName() << "]!" << endl;
-
-        // 3. 執行技能效果
-        if (skillNumber == 1) { // 嗜血狂擊 (擴散傷害)
-            if (targetIndex < 0 || targetIndex >= enemyLine.size() || enemyLine[targetIndex] == nullptr || !enemyLine[targetIndex]->isAlive()) {
-                cout << "Invalid or dead target!" << endl;
-                return false;
-            }
-
-            Monster* mainTarget = enemyLine[targetIndex];
-            int mainDamage = round(attackPower * 2.5); // 大量傷害 250%
-            int splashDamage = round(mainDamage * 0.5); // 擴散 50%
-
-            cout << "🪓 Cleaving " << mainTarget->getName() << "!" << endl;
-            mainTarget->takeDamage(mainDamage);
-
-            // 左側擴散
-            if (targetIndex - 1 >= 0 && enemyLine[targetIndex - 1] != nullptr && enemyLine[targetIndex - 1]->isAlive()) {
-                cout << " Splash hits left: " << enemyLine[targetIndex - 1]->getName() << endl;
-                enemyLine[targetIndex - 1]->takeDamage(splashDamage);
-            }
-            // 右側擴散
-            if (targetIndex + 1 < enemyLine.size() && enemyLine[targetIndex + 1] != nullptr && enemyLine[targetIndex + 1]->isAlive()) {
-                cout << " Splash hits right: " << enemyLine[targetIndex + 1]->getName() << endl;
-                enemyLine[targetIndex + 1]->takeDamage(splashDamage);
-            }
+            cout << "🩸 " << name << " consumes " << hpCost << " HP to empower the strike! (Remaining HP: " << hp << ")" << endl;
         } 
-        else if (skillNumber == 2) { // 反擊巨獸
-            isCounterActive = true;
-            activeEnemyLine = &enemyLine; // 綁定當前戰場，受傷時才能找到全體敵人
-            cout << "🛡️ [Buff] Enters Counter State for 1 turn. Ready to retaliate!" << endl;
+        else if (skillNumber == 1) {
+            cout << "🛡️ [Berserker]: \"Let them come! I'll crush them all!\"" << endl;
         } 
-        else if (skillNumber == 3) { // 狂獸極刑
-            // 計算生命比例與增傷
+        else if (skillNumber == 2) {
+            // SPECIAL 邏輯：動態計算血量比例與傷害
             double hpRatio = (double)hp / maxHp;
-            double damageMultiplier = 2.0; // 基礎 200% 大量傷害
+            double damageMultiplier = 2.0;
 
-            // 自身生命比例越低則傷害越高，低於 30% 時達到最大值 (額外增傷 150%)
-            if (hpRatio <= 0.3) {
-                damageMultiplier += 1.5; 
-                cout << " [Max Power] HP below 30%! Ultimate execution activated!" << endl;
+            if (hpRatio <= 0.2) {
+                damageMultiplier += 1.5;
+                cout << "🔥 [Max Power] HP below 20%! Ultimate execution activated!" << endl;
             } else {
-                // 按比例線性增傷
-                damageMultiplier += (1.0 - hpRatio) * 1.5;
+                damageMultiplier += (1.0 - hpRatio) * (1.5 / 0.8);
             }
 
             int finalAoeDamage = round(attackPower * damageMultiplier);
             cout << " Final damage multiplier: " << round(damageMultiplier * 100) << "%" << endl;
 
-            // 對敵方全體造成傷害
-            for (auto enemy : enemyLine) {
+            for (auto enemy : monsters) {
                 if (enemy != nullptr && enemy->isAlive()) {
                     cout << " Executing " << enemy->getName() << "!" << endl;
                     enemy->takeDamage(finalAoeDamage);
@@ -187,22 +125,7 @@ namespace RPG_Colaborate {
             }
         }
 
-        // 進入 CD
-        currentCD[skillIndex] = maxCD[skillIndex];
-        return true;
-    }
-
-    // 每回合結束時呼叫，減少 CD
-    void Berserker::updateTurnStatus() {
-        for (int i = 0; i < 3; ++i) {
-            if (currentCD[i] > 0) currentCD[i]--;
-        }
-        
-        // 如果反擊狀態過了一回合都沒被分配受傷，清空狀態
-        if (isCounterActive) {
-            isCounterActive = false;
-            activeEnemyLine = nullptr;
-            cout << "[Counter Behemoth] Counter state expired without being hit." << endl;
-        }
+        // 剩下的統一交給父類處理 (如扣魔、進入 CD、賦予狀態)
+        return Player::useSkill(skillNumber, targetIndex, players, monsters);
     }
 }

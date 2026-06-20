@@ -1,3 +1,4 @@
+#include "BattleManager.h"
 #include "Monster.h"
 #include "Player.h"
 #include <string>
@@ -20,6 +21,7 @@ namespace RPG_Colaborate
     //getters
     string Monster::getName() const { return name; }
     int Monster::getHp() const { return hp; }
+    int Monster::getMaxHp() const { return maxHp; }
     int Monster::getAttackPower() const { return attackPower; }
     int Monster::getRewardGold() const { return rewardGold; }
     int Monster::getEvadeRate() const { return evadeRate; }
@@ -27,9 +29,11 @@ namespace RPG_Colaborate
 
     //setters
     void Monster::setName(const string& newName) { name = newName; }
-    void Monster::setHp(int newHp) {
-        hp = newHp;
-
+    void Monster::setHp(int newHp) { hp = newHp; }
+    void Monster::setMaxHp(int newMaxHp) { 
+        if (newMaxHp >= 0) {
+            maxHp = newMaxHp;
+        }
     }
     void Monster::setRewardGold(int newRewardGold) {
         if (newRewardGold >= 0) {

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "Player.h"
 #include "Skill.h"
 #include "Item.h"
@@ -6,18 +7,25 @@
 using namespace std;
 using namespace RPG_Colaborate;
 
-void report()
-{
-    //播放戰鬥畫面，顯示內容:
-    //層數
-    //敵方血量與狀態
-    //我方血量 擁有道具 狀態
-}
-
 int
 main()
 {
     //創建四個人
+    vector<Player> players;
+    int role;
+    for (int i = 0; i < 4; i++) {
+        cout << "Choose job(Player " << i+1 << "): ";
+        cin >> role;
+        switch (role)
+        {
+        case 0:
+            break;
+        default:
+            break;
+        }
+    }
+    
+
     //創建怪物
     //戰鬥準備:
     //1.選擇職業

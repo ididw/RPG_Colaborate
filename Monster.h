@@ -18,6 +18,7 @@ namespace RPG_Colaborate
         int rewardGold;
         int evadeRate;
         int defense;
+        map<EffectType, int> StatusEffectList;
 
     public:
         //建構子
@@ -28,6 +29,7 @@ namespace RPG_Colaborate
         //getters
         string getName()const;
         int getHp()const;
+        int getMaxHp()const;
         int getAttackPower()const;
         int getRewardGold()const;
         int getEvadeRate()const;
@@ -37,6 +39,7 @@ namespace RPG_Colaborate
         //setters
         void setName(const string& newName);
         void setHp(int newHp);
+        void setMaxHp(int newMaxHp);
         void setAttackPower(int newAttackPower);
         void setRewardGold(int newRewardGold);
         void setEvadeRate(int newEvadeRate);
@@ -48,6 +51,11 @@ namespace RPG_Colaborate
         void takeDamage(int damage);
         bool isAlive()const;
         void showInfo()const;
+
+        string getBuffs();
+        string getDebuffs();
+
+        void takeEffect(EffectType effectType);
     };
 }
 

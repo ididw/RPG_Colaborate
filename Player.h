@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "BattleManager.h"
 #include <string>
 #include <map>
 using std::string;
@@ -27,7 +28,7 @@ namespace RPG_Colaborate
         int defense;
         map<int, Item> items;
         Skill* skillbox[3];
-        int damageBuffTurns;
+        map<EffectType, int> StatusEffectList;
     public:
         Player();
         Player(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
@@ -55,18 +56,22 @@ namespace RPG_Colaborate
         bool consumeMp(int amount);
 
         // Core combat and interaction actions
-        virtual void attack(Monster& target);
+        virtual void attack(int targetIndex, vector<Monster*> monsters, vector<Player*> players);
         virtual void takeDamage(int damage);
         bool useItem(int itemCode);
-        bool useSkill(int skillNumber, Monster& target);
+        virtual bool useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters);
         bool isAlive();
 
         // 在 public: 底下找地方補上這兩行
         void heal(int amount);
         //void restoreMp(int amount);
 
-        void setDamageBuffTurns(int turns);
+        string getBuffs();
+        string getDebuffs();
+
+        void takeEffect(EffectType& effectType, int effectTurns);
         void reviveWithHp(int reviveHp);
+        virtual void triggerClassSpecial(EffectType& type);
     };
 }
 

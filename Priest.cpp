@@ -1,34 +1,51 @@
 #include "Priest.h"
-#include "Item.h"
 #include "Skill.h"
 #include "Monster.h"
 #include <iostream>
 
+using std::cout;
+using std::endl;
+
 namespace RPG_Colaborate {
+
+    Priest::Priest() : Player(), canRevive(true) {
+        job = "Priest";
+        skillbox[0] = new Skill("Retribution Ray", SINGLE, OWNH, NONEE, 0,
+            DAMAGE, NONE, NONE, NONE, HEAL, NONE, NONE, attackPower, 2.25, 15, 30, 0, 2);
+        skillbox[1] = new Skill("Healing Art", TEAM, TEAMH, STRENGTH, 2,
+            NONE, NONE, BUFF, NONE, HEAL, NONE, NONE, attackPower, 0, 40, 50, 0, 4);                    
+        skillbox[2] = new Skill("Divine Resurrection", SINGLE, NONEH, NONEE, 0,
+            NONE, NONE, NONE, NONE, NONE, REVIVE, NONE, attackPower, 0, 0, 90, 0, 20);
+    }
 
     Priest::Priest(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense)
         : Player(theName, theMaxHp, theMaxMp, theAttackPower, theDefense), canRevive(true) { 
-        // 2. 這裡把 5 個參數原封不動往上傳給 Player
-        
-        this->criticalRate = 10;
-        this->criticalEffect = 150;
-
-        // 技能初始化保持不變
-        skillbox[0] = new Skill("Retribution Ray", "Damage", theAttackPower, 25); 
-        skillbox[1] = new Skill("Healing Art", "Heal", 0, 50);                    
-        skillbox[2] = new Skill("Divine Resurrection", "Revive", 0, 90);          
+        job = "Priest";
+        skillbox[0] = new Skill("Retribution Ray", SINGLE, OWNH, NONEE, 0,
+            DAMAGE, NONE, NONE, NONE, HEAL, NONE, NONE, attackPower, 2.25, 15, 30, 0, 2);
+        skillbox[1] = new Skill("Healing Art", TEAM, TEAMH, STRENGTH, 2,
+            NONE, NONE, BUFF, NONE, HEAL, NONE, NONE, attackPower, 0, 40, 50, 0, 4);                    
+        skillbox[2] = new Skill("Divine Resurrection", SINGLE, NONEH, NONEE, 0,
+            NONE, NONE, NONE, NONE, NONE, NONE, REVIVE, attackPower, 0, 0, 90, 0, 0);
     }
 
-    Priest::~Priest() {}
+    Priest::~Priest() {
+        for (int i = 0; i < 3; i++) {
+            if (skillbox[i] != nullptr) {
+                delete skillbox[i];
+                skillbox[i] = nullptr;
+            }
+        }
+    }
 
     void Priest::triggerPassiveHeal(std::vector<Player*>& teammates) {
         if (teammates.empty()) return;
         
         Player* lowestTarget = nullptr;
-        double lowestRatio = 1.0;
+        double lowestRatio = 2.0; // 初始設大於 1
 
         for (Player* p : teammates) {
-            if (p->isAlive()) {
+            if (p != nullptr && p->isAlive()) {
                 double ratio = (double)p->getHp() / p->getMaxHp();
                 if (ratio < lowestRatio) {
                     lowestRatio = ratio;
@@ -40,55 +57,50 @@ namespace RPG_Colaborate {
         if (lowestTarget != nullptr) {
             int healAmount = lowestTarget->getMaxHp() * 0.15;
             lowestTarget->heal(healAmount); 
-            std::cout << "[Priest Passive] Automatically healed the lowest HP teammate " 
-                      << lowestTarget->getName() << " for 15% HP (" << healAmount << " HP)!" << std::endl;
+            cout << "🕊️ [Priest Passive] Holy light embraces " << lowestTarget->getName() 
+                 << ", restoring " << healAmount << " HP (15%)!" << endl;
         }
     }
 
-    void Priest::attackWithHeal(std::vector<Monster*>& targets, int primaryIndex, std::vector<Player*>& teammates) {
-        if (targets.empty()) return;
-        std::cout << name << " swings the staff for a basic attack!" << std::endl;
-        targets[primaryIndex]->takeDamage(this->attackPower);
-        
-        triggerPassiveHeal(teammates);
+    void Priest::attack(int targetIndex, vector<Monster*> monsters, vector<Player*> players) {
+        // 呼叫父類普攻
+        Player::attack(targetIndex, monsters, players);
+        // 普攻後觸發被動回血
+        triggerPassiveHeal(players);
     }
 
-    void Priest::castRetributionRay(Monster* target, std::vector<Player*>& teammates) {
-        std::cout << name << " casts [Retribution Ray]!" << std::endl;
-        target->takeDamage(this->attackPower * 1.3);
-        
-        int selfHeal = this->maxHp * 0.15;
-        this->heal(selfHeal);
-        std::cout << "Divine light heals the caster for " << selfHeal << " HP." << std::endl;
+    bool Priest::useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) {
+        if (skillNumber < 0 || skillNumber >= 3 || skillbox[skillNumber] == nullptr) return false;
 
-        triggerPassiveHeal(teammates);
-    }
+        int mpRequired = skillbox[skillNumber]->getMpCost();
+        if (mp < mpRequired) {
+            cout << name << " does not have enough MP!" << endl;
+            return false;
+        }
 
-    void Priest::castHealingArt(std::vector<Player*>& teammates) {
-        std::cout << name << " chants [Healing Art]! Holy light covers the battlefield!" << std::endl;
-        for (Player* p : teammates) {
-            if (p->isAlive()) {
-                p->heal(p->getMaxHp() * 0.4);
-                p->setDamageBuffTurns(2); 
+        // 第三技能 (復活) 特判：一場戰鬥只能用一次
+        if (skillNumber == 2) {
+            if (!canRevive) {
+                cout << "❌ [Divine Resurrection] This skill can only be used once per battle!" << endl;
+                return false;
             }
+            // 只要施放成功，標記為不可用
+            canRevive = false;
+            cout << "🕊️ [Priest]: \"Arise... for your mission is not yet complete!\"" << endl;
+        } else if (skillNumber == 0) {
+            cout << "🕊️ [Priest]: \"Feel the wrath of the divine!\"" << endl;
+        } else if (skillNumber == 1) {
+            cout << "🕊️ [Priest]: \"May the holy light bless us all.\"" << endl;
         }
-        triggerPassiveHeal(teammates);
-    }
 
-    void Priest::castDivineResurrection(Player* deadTeammate) {
-        if (!canRevive) {
-            std::cout << "This skill can only be used once per battle!" << std::endl;
-            return;
-        }
-        
-        if (deadTeammate != nullptr && !deadTeammate->isAlive()) {
-            deadTeammate->reviveWithHp(deadTeammate->getMaxHp() * 0.5); 
-            canRevive = false; 
-            std::cout << "[Divine Miracle] " << name << " successfully revived teammate " 
-                      << deadTeammate->getName() << "!" << std::endl;
-        } else {
-            std::cout << "Target teammate is still alive, no need to revive." << std::endl;
-        }
-    }
+        // 呼叫父類執行技能
+        bool success = Player::useSkill(skillNumber, targetIndex, players, monsters);
 
-} // namespace RPG_Colaborate
+        // 第一、二技能施放成功後，觸發被動回血
+        if (success && (skillNumber == 0 || skillNumber == 1)) {
+            triggerPassiveHeal(players);
+        }
+
+        return success;
+    }
+}

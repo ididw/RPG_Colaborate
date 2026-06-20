@@ -16,6 +16,7 @@ namespace RPG_Colaborate {
     public:
         Assassin();
         Assassin(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
+        ~Assassin();
 
         // getters
         int getCriticalRate() const;
@@ -29,6 +30,9 @@ namespace RPG_Colaborate {
 
         // Call this at the end of every turn
         void executeTurnActions(vector<Monster*>& monsterList);
+
+        // 覆寫 useSkill 以實現大招重置
+        bool useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) override;
     };
 }
 

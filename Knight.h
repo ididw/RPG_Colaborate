@@ -14,6 +14,7 @@ namespace RPG_Colaborate {
         // Inherit the constructor from Player
         Knight();
         Knight(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
+        ~Knight();
 
         // getters
         int getCriticalRate() const;
@@ -24,7 +25,8 @@ namespace RPG_Colaborate {
         void setCriticalEffect(int newEffect);
 
         // Override takeDamage for flat damage reduction (Knight's passive)
-        void takeDamage(int damage) override;
+        void takeDamage(int damage);
+        bool useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters);
     };
 }
 

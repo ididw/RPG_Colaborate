@@ -8,23 +8,20 @@ namespace RPG_Colaborate {
 
     class Priest : public Player {
     private:
-        int criticalRate;
-        int criticalEffect;
         bool canRevive; 
 
+        // 內部共用邏輯：對最低血量隊友回血 15%
         void triggerPassiveHeal(std::vector<Player*>& teammates);
 
     public:
+        Priest();
         Priest(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense);
         virtual ~Priest() override;
 
-        virtual void attackWithHeal(std::vector<Monster*>& targets, int primaryIndex, std::vector<Player*>& teammates);
-        
-        void castRetributionRay(Monster* target, std::vector<Player*>& teammates); 
-        void castHealingArt(std::vector<Player*>& teammates);                    
-        void castDivineResurrection(Player* deadTeammate);                       
+        // 覆寫以觸發被動補血
+        void attack(int targetIndex, vector<Monster*> monsters, vector<Player*> players) override;
+        bool useSkill(int skillNumber, int targetIndex, vector<Player*> players, vector<Monster*> monsters) override;
     };
+}
 
-} // namespace RPG_Colaborate
-
-#endif // PRIEST_H
+#endif
