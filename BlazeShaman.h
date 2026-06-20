@@ -1,0 +1,19 @@
+#ifndef BLAZESHAMAN_H
+#define BLAZESHAMAN_H
+
+#include "Monster.h"
+#include <vector>
+
+namespace RPG_Colaborate {
+    class Player;
+
+    class BlazeShaman : public Monster {
+    public:
+        BlazeShaman();
+        
+        // 專屬技能：對全體玩家造成傷害並附加 BURN 狀態
+        void aoeBurnSkill(std::vector<Player*>& players);
+    };
+}
+
+#endif // BLAZESHAMAN_H
