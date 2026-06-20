@@ -3,6 +3,7 @@
 
 #include "Monster.h"
 #include <vector>
+using std::vector;
 
 namespace RPG_Colaborate {
     class Player;

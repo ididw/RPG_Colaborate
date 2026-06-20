@@ -11,10 +11,10 @@ namespace RPG_Colaborate
     enum EffectType; // 假設原本有的狀態類型
 
     // 1. 新增等級/稀有度列舉
-    enum class MonsterRank {
-        Normal,  // 小怪
-        Elite,   // 精英
-        Boss     // Boss
+    enum MonsterRank {
+        NORMAL,  // 小怪
+        ELITE,   // 精英
+        BOSS     // Boss
     };
     
     class Monster
@@ -44,6 +44,7 @@ namespace RPG_Colaborate
         int getRewardGold()const;
         int getEvadeRate()const;
         int getDefense()const;
+        MonsterRank getRank()const;
 
 
         //setters
@@ -54,6 +55,7 @@ namespace RPG_Colaborate
         void setRewardGold(int newRewardGold);
         void setEvadeRate(int newEvadeRate);
         void setDefense(int newDefense);
+        void setRank(const MonsterRank& theRank);
 
 
         //function

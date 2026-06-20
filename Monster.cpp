@@ -12,7 +12,7 @@ namespace RPG_Colaborate
 {
     //預設建構子，內容隨便填的，建議不用
     Monster::Monster(): 
-    name("monster"), hp(100), attackPower(10), rewardGold(10), evadeRate(0), defense(0), rank(MonsterRank::Normal) {}
+    name("monster"), hp(100), attackPower(10), rewardGold(10), evadeRate(0), defense(0), rank(NORMAL) {}
 
     //建構子
     Monster::Monster(const string& name,int hp,int attackPower,int rewardGold,int evadeRate,int defense, MonsterRank rank):

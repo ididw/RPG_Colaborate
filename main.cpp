@@ -4,7 +4,9 @@
 #include "Skill.h"
 #include "Item.h"
 #include "Monster.h"
-using namespace std;
+using std::vector;
+using std::cin;
+using std::cout;
 using namespace RPG_Colaborate;
 
 int
@@ -36,14 +38,14 @@ main()
 
     // 參數順序：名字, 血量, 攻擊力, 獎勵金幣, 閃避率, 防禦力, 等級(Rank)
     // 1. 小怪們 (Normal)
-    monsterTable.push_back(Monster("Slime", 50, 10, 10, 0, 0, MonsterRank::Normal));
-    monsterTable.push_back(Monster("Goblin", 80, 10, 15, 5, 0, MonsterRank::Normal));
-    monsterTable.push_back(Monster("Goblin Warrior", 80, 10, 20, 5, 5, MonsterRank::Normal));
-    monsterTable.push_back(Monster("Skeleton", 60, 16, 25, 0, 2, MonsterRank::Normal));
+    monsterTable.push_back(Monster("Slime", 50, 10, 10, 0, 0, NORMAL));
+    monsterTable.push_back(Monster("Goblin", 80, 10, 15, 5, 0, NORMAL));
+    monsterTable.push_back(Monster("Goblin Warrior", 80, 10, 20, 5, 5, NORMAL));
+    monsterTable.push_back(Monster("Skeleton", 60, 16, 25, 0, 2, NORMAL));
 
     // 2. 精英怪們 (Elite)
-    monsterTable.push_back(Monster("Elite Goblin Warrior", 150, 18, 50, 5, 12, MonsterRank::Elite));
-    monsterTable.push_back(Monster("Death Knight", 250, 22, 100, 0, 20, MonsterRank::Elite)); // 高血高防
+    monsterTable.push_back(Monster("Elite Goblin Warrior", 150, 18, 50, 5, 12, ELITE));
+    monsterTable.push_back(Monster("Death Knight", 250, 22, 100, 0, 20, ELITE)); // 高血高防
 
     //戰鬥流程:
     //1.選擇施放普攻/技能，可選擇使用道具

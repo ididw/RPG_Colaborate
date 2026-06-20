@@ -10,22 +10,22 @@ namespace RPG_Colaborate {
     // Constructors
     Mage::Mage() : Player() {
         job = "Mage";
-        skillbox[0] = new Skill("烈焰迸發", SPREAD, NONEH, BURN, 3,
+        skillbox[0] = new Skill("Flame Burst", SPREAD, NONEH, BURN, 3,
             DAMAGE, NONE, NONE, DEBUFF, NONE, NONE, SPECIAL, attackPower, 1.2, 0, 30, 0, 4);
-        skillbox[1] = new Skill("冰霜新星", SPREAD, NONEH, FREEZE, 3,
+        skillbox[1] = new Skill("Frost Nova", SPREAD, NONEH, FREEZE, 3,
             DAMAGE, NONE, NONE, DEBUFF, NONE, NONE, SPECIAL, attackPower, 1.2, 0, 30, 0, 4);
-        skillbox[2] = new Skill("極黑之隕", AOE, NONEH, NONEE, 0,
+        skillbox[2] = new Skill("Dark Meteor", AOE, NONEH, NONEE, 0,
             DAMAGE, NONE, NONE, NONE, NONE, NONE, SPECIAL, attackPower, 2.5, 0, 70, 0, 6);
     }
 
     Mage::Mage(string theName, int theMaxHp, int theMaxMp, int theAttackPower, int theDefense)
     : Player(theName, theMaxHp, theMaxMp, theAttackPower, theDefense) {
         job = "Mage";
-        skillbox[0] = new Skill("烈焰迸發", SPREAD, NONEH, BURN, 2,
+        skillbox[0] = new Skill("Flame Burst", SPREAD, NONEH, BURN, 2,
             DAMAGE, NONE, NONE, DEBUFF, NONE, NONE, NONE, attackPower, 1.2, 0, 30, 0, 4);
-        skillbox[1] = new Skill("冰霜新星", SPREAD, NONEH, FREEZE, 2,
+        skillbox[1] = new Skill("Frost Nova", SPREAD, NONEH, FREEZE, 2,
             DAMAGE, NONE, NONE, DEBUFF, NONE, NONE, NONE, attackPower, 1.2, 0, 30, 0, 4);
-        skillbox[2] = new Skill("極黑之隕", AOE, NONEH, NONEE, 0,
+        skillbox[2] = new Skill("Dark Meteor", AOE, NONEH, NONEE, 0,
             DAMAGE, NONE, NONE, NONE, NONE, NONE, NONE, attackPower, 2.5, 0, 70, 0, 6);
     }
 
@@ -75,11 +75,11 @@ namespace RPG_Colaborate {
 
         // 提前播報技能台詞
         if (skillNumber == 0) {
-            cout << "🔥 [Mage]: \"Incinerate! 烈焰迸發!\"" << endl;
+            cout << "🔥 [Mage]: \"Gather, flames... Flame Burst!\"" << endl;
         } else if (skillNumber == 1) {
-            cout << "❄️ [Mage]: \"Shatter! 冰霜新星!\"" << endl;
+            cout << "❄️ [Mage]: \"Freeze, ground... Frost Nova!\"" << endl;
         } else if (skillNumber == 2) {
-            cout << "🌌 [Mage]: \"Descend into absolute darkness... 極黑之隕!\"" << endl;
+            cout << "🌌 [Mage]: \"The time for darkness to fall has come... Dark Meteor!\"" << endl;
         }
 
         return Player::useSkill(skillNumber, targetIndex, players, monsters);

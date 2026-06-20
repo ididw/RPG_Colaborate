@@ -31,6 +31,8 @@ namespace RPG_Colaborate {
 
         // 供戰場檢測到「持有反擊狀態且受擊」時，向下呼叫的反擊函式
         void triggerCounterAttack(vector<Monster*> monsters);
+        
+        void triggerClassSpecial(Skill& theSkill, int targetIndex, vector<Monster*>& monsters, vector<Player*>& players);
     };
 }
 

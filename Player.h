@@ -66,7 +66,7 @@ namespace RPG_Colaborate
         void heal(int amount);
         //void restoreMp(int amount);
 
-        int getEffects(const EffectType& effectType);
+        int getEffectTurns(const EffectType& effectType);
 
         void takeEffect(const EffectType& effectType, int effectTurns);
         void reviveWithHp(int reviveHp);

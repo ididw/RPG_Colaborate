@@ -104,34 +104,16 @@ namespace RPG_Colaborate {
             return false;
         }
 
-        // 播報台詞
-        if (skillNumber == 0) cout << "🗡️ [Assassin]: \"A swift end...\"" << endl;
-        else if (skillNumber == 1) cout << "🗡️ [Assassin]: \"Shadows veil me.\"" << endl;
-        else if (skillNumber == 2) cout << "🗡️ [Assassin]: \"Sleep now, into the eternal nightmare.\"" << endl;
-
-        // 若為大招，先記錄目標的狀態
-        Monster* targetMonster = nullptr;
-        if (skillNumber == 2 && targetIndex >= 0 && targetIndex < monsters.size()) {
-            targetMonster = monsters[targetIndex];
+        // 提前播報技能台詞
+        if (skillNumber == 0) {
+            cout << "🗡️ [Assassin]: \"A swift end...\"" << endl;
+        } else if (skillNumber == 1) {
+            cout << "🗡️ [Assassin]: \"Shadows veil me.\"" << endl;
+        } else if (skillNumber == 2) {
+            cout << "🗡️ [Assassin]: \"Sleep now, into the eternal nightmare.\"" << endl;
         }
 
-        // 呼叫父類執行技能
-        bool success = Player::useSkill(skillNumber, targetIndex, players, monsters);
-
-        // 大招擊殺判定
-        if (success && skillNumber == 2 && targetMonster != nullptr) {
-            if (!targetMonster->isAlive()) {
-                cout << "💀 [Nightmare Reap] Target executed! Skill cooldown reset and MP refunded. You may act again!" << endl;
-                // 回復 MP
-                this->mp += skillbox[2]->getMpCost();
-                if (this->mp > this->maxMp) this->mp = this->maxMp;
-                skillbox[2]->setCD(0);
-                
-                // 重置 CD 邏輯 (需在 BattleManager 的技能冷卻系統配合，這裡先重置 Skill 本身狀態若有)
-                // this->triggerFreeAction(); // 示意：這部分通常由 BattleManager 偵測回傳值或狀態來決定
-            }
-        }
-        return success;
+        return Player::useSkill(skillNumber, targetIndex, players, monsters);
     }
 
     void Assassin::triggerClassSpecial(Skill& theSkill, int targetIndex, vector<Monster*>& monsters, vector<Player*>& players)
@@ -143,7 +125,7 @@ namespace RPG_Colaborate {
             if (mp > maxMp) mp = maxMp;
             skillbox[2]->setCD(0);
 
-            this->takeEffect(FREEACTION, 1);
+            takeEffect(FREEACTION, 1);
                 
             // 重置 CD 邏輯 (需在 BattleManager 的技能冷卻系統配合，這裡先重置 Skill 本身狀態若有)
             // theBattleManager.triggerFreeAction(*this); // 示意：這部分通常由 BattleManager 偵測回傳值或狀態來決定

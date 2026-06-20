@@ -13,11 +13,11 @@ namespace RPG_Colaborate {
     : Player(), criticalRate(15), criticalEffect(200), multiShotTurns(0)
     {
         job = "Ranger";
-        skillbox[0] = new Skill("連續射擊", OWN, NONEH, CONTSHOOT, 2,
+        skillbox[0] = new Skill("Cascading Shots", OWN, NONEH, CONTSHOOT, 2,
             NONE, STATIC, NONE, NONE, NONE, NONE, SPECIAL, attackPower, 0, 0, 30, 0, 4);
-        skillbox[1] = new Skill("假人操術", OWN, NONEH, SPACEGOAT, 3,
+        skillbox[1] = new Skill("Mirage Artifice", OWN, NONEH, SPACEGOAT, 3,
             NONE, STATIC, NONE, NONE, NONE, NONE, NONE, attackPower, 0, 0, 40, 0, 3);
-        skillbox[2] = new Skill("萬箭齊發", SINGLE, NONEH, NONEE, 0,
+        skillbox[2] = new Skill("Endless Volley", SINGLE, NONEH, NONEE, 0,
             NONE, NONE, NONE, NONE, NONE, NONE, SPECIAL, attackPower, 0.6, 0, 70, 0, 6);
     }
 
@@ -26,11 +26,11 @@ namespace RPG_Colaborate {
       criticalRate(15), criticalEffect(200), multiShotTurns(0)
     {
         job = "Ranger";
-        skillbox[0] = new Skill("連續射擊", OWN, NONEH, CONTSHOOT, 2,
+        skillbox[0] = new Skill("Cascading Shots", OWN, NONEH, CONTSHOOT, 2,
             NONE, STATIC, NONE, NONE, NONE, NONE, NONE, attackPower, 0, 0, 30, 0, 4);
-        skillbox[1] = new Skill("假人操術", OWN, NONEH, SPACEGOAT, 3,
+        skillbox[1] = new Skill("Mirage Artifice", OWN, NONEH, SPACEGOAT, 3,
             NONE, STATIC, NONE, NONE, NONE, NONE, NONE, attackPower, 0, 0, 40, 0, 3);
-        skillbox[2] = new Skill("萬箭齊發", SINGLE, NONEH, NONEE, 0,
+        skillbox[2] = new Skill("Endless Volley", SINGLE, NONEH, NONEE, 0,
             DAMAGE, NONE, NONE, NONE, NONE, NONE, NONE, attackPower, 0.6, 0, 70, 0, 6);
     }
 
@@ -41,12 +41,12 @@ namespace RPG_Colaborate {
     void Ranger::setCriticalEffect(int newEffect) { criticalEffect = newEffect; }
 
     void Ranger::attack(int targetIndex, vector<Monster*>& monsters, vector<Player*>& players) {
-        bool isBoss = (monsters[targetIndex]->getName().find("Boss") != string::npos);
-        double multiplier = isBoss ? 1.5 : 1.0;
+        bool isElite = (monsters[targetIndex]->getRank() == ELITE || monsters[targetIndex]->getRank() == BOSS);
+        double multiplier = isElite ? 1.5 : 1.0;
 
         int currentCritRate = criticalRate + ((StatusEffectList[CONTSHOOT] >= 0) ? 30 : 0);
 
-        if (isBoss) {
+        if (isElite) {
             cout << " [Ranger Passive] Locked onto Boss! Damage increased by 50%!" << endl;
         }
 
@@ -83,16 +83,15 @@ namespace RPG_Colaborate {
             return false;
         }
 
-        if (skillNumber == 0) { 
-            cout << " [Buff] Basic attacks become Triple Shot for 2 turns! (Crit Rate +30%)" << endl;
-        } 
-        else if (skillNumber == 1) { 
-            cout << "🪵 [Hide] Summoned a Decoy to absorb incoming damage!" << endl;
-        } 
-        else if (skillNumber == 2) { 
-            cout << " [Arrow Rain] Unleashing a barrage of arrows!" << endl;
+        // 提前播報技能台詞
+        if (skillNumber == 0) {
+            cout << "🏹 [Ranger]: \"Can you dodge this? Let's see your speed!\"" << endl;
+        } else if (skillNumber == 1) {
+            cout << "🎯 [Ranger]: \"Fooled you! Look over here, dummy!\"" << endl;
+        } else if (skillNumber == 2) {
+            cout << "🌧️ [Ranger]: \"Watch closely! This is full-coverage shooting with zero blind spots!\"" << endl;
         }
-        
+
         return Player::useSkill(skillNumber, targetIndex, players, monsters);
     }
 

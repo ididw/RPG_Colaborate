@@ -5,7 +5,7 @@
 
 namespace RPG_Colaborate {
     BlazeShaman::BlazeShaman()
-        : Monster("Blaze Shaman", 100, 14, 35, 0, 3, MonsterRank::Normal) {
+        : Monster("Blaze Shaman", 100, 14, 35, 0, 3, NORMAL) {
     }
 
     void BlazeShaman::aoeBurnSkill(std::vector<Player*>& players) {
