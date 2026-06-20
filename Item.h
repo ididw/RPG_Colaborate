@@ -15,11 +15,12 @@ namespace RPG_Colaborate
         string type;
         int effectValue;
         int quantity;
+        bool usableInBattle; // 新增：是否可在戰鬥中使用
 
     public:
-        // 建構子
+        // 建構子 (預設可用於戰鬥)
         Item();
-        Item(string name, string type, int effectValue, int quantity);
+        Item(string name, string type, int effectValue, int quantity, bool usableInBattle = true);
         ~Item();
 
         // Getters
@@ -27,6 +28,7 @@ namespace RPG_Colaborate
         string getType() const;
         int getEffectValue() const;
         int getQuantity() const;
+        bool getUsableInBattle() const; // 新增的 Getter
 
         // Setters
         void setName(const string& newName);
@@ -34,8 +36,8 @@ namespace RPG_Colaborate
         void setEffectValue(int newValue);
         void setQuantity(int newQuantity);
 
-        // 使用道具之類的
-        void use(Player& user);
+        // 使用道具 (參數改為 target，方便對隊友使用)
+        void use(Player& target);
         void showInfo() const;
         bool isAvailable() const;
     };
