@@ -26,6 +26,7 @@ namespace RPG_Colaborate
     int Monster::getRewardGold() const { return rewardGold; }
     int Monster::getEvadeRate() const { return evadeRate; }
     int Monster::getDefense() const { return defense; }
+    MonsterRank Monster::getRank() const { return rank; }
 
     //setters
     void Monster::setName(const string& newName) { name = newName; }
@@ -47,7 +48,10 @@ namespace RPG_Colaborate
     }
     void Monster::setEvadeRate(int newEvadeRate) { evadeRate = newEvadeRate; }
     void Monster::setDefense(int newDefense) { defense = newDefense; }
-
+    // 1. 設定怪物等級
+    void Monster::setRank(const MonsterRank& theRank) {
+        rank = theRank;
+    }
     //function
     void Monster::attack(Player& player)
     {
@@ -92,6 +96,35 @@ namespace RPG_Colaborate
         cout<<"Monster hp:"<<hp<<endl;
         cout<<"Monster attack:"<<attackPower<<endl;
         cout<<"Monster reward gold:"<<rewardGold<<endl;
+    }
+
+        // 2. 承受狀態異常（例如：被施加 BURN 3 回合）
+    void Monster::takeEffect(EffectType effectType, int effectTurns) {
+        // 假設你在 Monster.h 裡的 map 變數叫做 effects (即 map<EffectType, int> effects;)
+        // 這裡直接將該狀態的回合數更新或寫入
+        StatusEffectList[effectType] = effectTurns; 
+    }
+
+    // 3. 取得某個狀態剩餘的回合數
+    int Monster::getEffects(EffectType effectType) {
+        // 檢查 map 裡面有沒有這個狀態，有的話回傳剩餘回合，沒有就回傳 0
+        if (StatusEffectList.find(effectType) != StatusEffectList.end()) {
+            return StatusEffectList[effectType];
+        }
+        return 0; 
+    }
+
+    // 4. 取得所有 Buff（正面狀態）的字串
+    string Monster::getBuffs() {
+        // 從對話截圖看，逸明明天會用 enum 的數字來切分正負面狀態
+        // 為了讓今天的編譯能順利通過，我們先回傳乾淨的預設值交差
+        return ""; 
+    }
+
+    // 5. 取得所有 Debuff（負面狀態）的字串
+    string Monster::getDebuffs() {
+        // 同上，先回傳預設值，明天逸明的戰場邏輯寫好後他自己會來豐富這段
+        return ""; 
     }
 
 }

@@ -2,7 +2,12 @@
 #define MONSTER_H
 
 #include<string>
+#include<vector>
+#include <map>
+#include "BattleManager.h"
 using std::string;
+using std::vector;
+using std::map;
 
 namespace RPG_Colaborate
 {
